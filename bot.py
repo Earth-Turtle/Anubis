@@ -3,14 +3,19 @@ import os
 
 from discord import *
 from dotenv import load_dotenv
+from discord.ext.commands import Bot
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-client = Client(intents=Intents(value=275952031808))
+intents = Intents.default()
+intents.message_content = True
 
-@client.event
+
+bot = Bot(command_prefix='!', intents=intents)
+
+@bot.event
 async def on_ready():
-    print(f'{client.user} has connected to Discord!')
+    print(f'{bot.user.name} has connected to Discord!')
 
-client.run(TOKEN)
+bot.run(TOKEN)
