@@ -33,6 +33,7 @@ async def reactions_given(ctx: Context, user: User, amount: int = 200, channel: 
             async for reactor in reaction.users():
                 if reactor.name == user.name:
                     stats[str(reaction.emoji)] += 1
+                    break
     await ctx.send("Reactions given by " + user.mention)
     await ctx.send(format_stats(stats))
             
