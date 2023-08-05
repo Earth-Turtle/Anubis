@@ -14,6 +14,10 @@ All commands are prefixed with `!`
   - Similar to above, except gathers statistics on reactions `user` gave to posts (including their own).
   - Significantly more network-intense due to needing to request both message history, and list of users from Discord for each group of reactions.
 
+## Other features
+
+Will respond humorously based on various inputs. These are meant to be secret, look in `lib` if you want spoilers.
+
 ## Future ideas
 
 1. Scan for and return a post with the most reactions total, or most of a specific emoji

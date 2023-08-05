@@ -8,6 +8,8 @@ from discord.utils import get
 from dotenv import load_dotenv
 from discord.ext.commands import Bot, Context
 
+from meme.responses import Responses
+
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
@@ -15,11 +17,20 @@ intents = Intents.default()
 intents.message_content = True
 
 
+
 bot = Bot(command_prefix='!', intents=intents)
 
 @bot.event
 async def on_ready():
     print(f'{bot.user.name} has connected to Discord!')
+
+@bot.event
+async def on_message(message: Message):
+    responder = Responses()
+    response = responder.find_response(message)
+    if response:
+        await message.reply(response)
+
 
 @bot.command(name='reactions_given', help='Generates stats for a specific user on their reactions given')
 async def reactions_given(ctx: Context, user: User, amount: int = 200, channel: TextChannel = None):
