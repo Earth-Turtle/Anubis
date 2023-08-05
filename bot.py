@@ -1,10 +1,8 @@
 # bot.py
 from collections import defaultdict
 import os
-from typing import Union
 
 from discord import *
-from discord.utils import get
 from dotenv import load_dotenv
 from discord.ext.commands import Bot, Context
 
