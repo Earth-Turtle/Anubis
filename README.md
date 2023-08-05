@@ -16,7 +16,7 @@ All commands are prefixed with `!`
 
 ## Other features
 
-Will respond humorously based on various inputs. These are meant to be secret, look in `lib` if you want spoilers.
+Will respond humorously based on various inputs. These are meant to be secret, look in `meme` if you want spoilers.
 
 ## Future ideas
 
