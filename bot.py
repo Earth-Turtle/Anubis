@@ -30,10 +30,11 @@ async def on_message(message: Message):
         await message.reply(response)
 
 @bot.event
-async def on_reaction_add(reaction: Reaction, user: User):
+async def on_reaction_add(reaction: Reaction, user: Member):
     message = reaction.message
-    if (reaction.emoji if type(reaction.emoji) == str else reaction.emoji.name) == "pushpin" and reaction.count >= 2 and user != message.author and not message.pinned:
-        await message.pin("haha funi meme")
+    if reaction.emoji == "📌" and reaction.count >= 2 and user != message.author and not message.pinned:
+        print("entered bloc")
+        await message.pin(reason="haha funi meme")
         concur = []
         async for user in reaction.users():
             concur.append(user)
