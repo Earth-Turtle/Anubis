@@ -7,14 +7,14 @@ from dotenv import load_dotenv
 from discord.ext.commands import Bot, Context
 
 from meme.responses import Responses
+from meme.congrats import get_tagline
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 intents = Intents.default()
 intents.message_content = True
-
-
+intents.moderation = True
 
 bot = Bot(command_prefix='!', intents=intents)
 
@@ -29,6 +29,15 @@ async def on_message(message: Message):
     if response:
         await message.reply(response)
 
+@bot.event
+async def on_reaction_add(reaction: Reaction, user: User):
+    message = reaction.message
+    if (reaction.emoji if type(reaction.emoji) == str else reaction.emoji.name) == "pushpin" and reaction.count >= 2 and user != message.author and not message.pinned:
+        await message.pin("haha funi meme")
+        concur = []
+        async for user in reaction.users():
+            concur.append(user)
+        await message.reply("Congrats! {} and {} have determined your meme should be pinned. {}".format(*[user.mention if user != message.author else concur[-1].mention for user in concur[:2]], get_tagline()))
 
 @bot.command(name='reactions_given', help='Generates stats for a specific user on their reactions given')
 async def reactions_given(ctx: Context, user: User, amount: int = 200, channel: TextChannel = None):
