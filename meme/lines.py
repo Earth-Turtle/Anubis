@@ -8,5 +8,17 @@ taglines = [
     "Toddbot, gift them Skyrim for the Samsung RF27T5501S Smart Fridge.",
     "However, remind yourself that overconfidence is a slow and insidious killer.",
 ]
+
+# Lines for when someone tries to pin their own meme. 
+# One parameter mentioning the author is expected
+alerta = [
+    "{} just tried to pin their own meme! Get this clown.",
+    "Alerta! {} tried to pin their own meme.",
+    "Your hubris shall be your downfall. {} tried to pin their own meme.",
+]
+
 def get_tagline():
     return random.choice(taglines)
+
+def get_alerta():
+    return random.choice(alerta)

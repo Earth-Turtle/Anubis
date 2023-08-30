@@ -7,7 +7,8 @@ from dotenv import load_dotenv
 from discord.ext.commands import Bot, Context
 
 from meme.responses import Responses
-from meme.congrats import get_tagline
+from meme.pinnable import alerta, check_pinnable
+from meme.forbidden import Inquisitor
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -15,6 +16,9 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 intents = Intents.default()
 intents.message_content = True
 intents.moderation = True
+intents.members = True
+
+inquisitor = Inquisitor()
 
 bot = Bot(command_prefix='!', intents=intents)
 
@@ -28,17 +32,21 @@ async def on_message(message: Message):
     response = responder.find_response(message)
     if response:
         await message.reply(response)
+    await inquisitor.inquisition(message)
+    
 
 @bot.event
-async def on_reaction_add(reaction: Reaction, user: Member):
-    message = reaction.message
-    if reaction.emoji == "📌" and reaction.count >= 2 and user != message.author and not message.pinned:
-        print("entered bloc")
-        await message.pin(reason="haha funi meme")
-        concur = []
-        async for user in reaction.users():
-            concur.append(user)
-        await message.reply("Congrats! {} and {} have determined your meme should be pinned. {}".format(*[user.mention if user != message.author else concur[-1].mention for user in concur[:2]], get_tagline()))
+async def on_raw_reaction_add(payload: RawReactionActionEvent):
+    user = bot.get_user(payload.user_id)
+    channel = bot.get_channel(payload.channel_id)
+    message = await channel.fetch_message(payload.message_id)
+    emoji = payload.emoji
+    reaction = None
+    for reaction in message.reactions:
+        if reaction.emoji == emoji:
+            break
+    await check_pinnable(reaction, user)
+    
 
 @bot.command(name='reactions_given', help='Generates stats for a specific user on their reactions given')
 async def reactions_given(ctx: Context, user: User, amount: int = 200, channel: TextChannel = None):
