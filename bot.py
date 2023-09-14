@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from discord.ext.commands import Bot, Context
 
 from meme.responses import Responses
-from meme.pinnable import alerta, check_pinnable
+from meme.pinnable import check_pinnable
 from meme.forbidden import Inquisitor
 
 load_dotenv()

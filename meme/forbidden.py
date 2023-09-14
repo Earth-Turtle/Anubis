@@ -8,7 +8,7 @@ class Inquisitor:
 
     async def inquisition(self, message: Message):
         
-        if self.counter >= 500 and len(set(message.content.split())) >= 10:
+        if self.counter >= 700 and len(set(message.content.split())) >= 15:
             self.counter = 0
             await self.timeout(message)
             return
@@ -17,7 +17,7 @@ class Inquisitor:
             await self.timeout(message)
         self.counter += 1
         if self.counter % 100 == 0:
-            print("At {} messages on the counter" % self.counter)
+            print("At {} messages on the counter".format(self.counter))
 
     async def timeout(self, message: Message):
         try:
