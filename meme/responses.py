@@ -1,6 +1,6 @@
-from discord import *
+from discord import Message
 import re
-from datetime import *
+from datetime import datetime
 
 
 class Responses:
@@ -16,7 +16,7 @@ class Responses:
             return "https://i.imgur.com/hAmu4dV.png"
         if re.search(r"\bfish\b", message.content) and self.timer("fish", 60*60*24):
             return "https://media.tenor.com/BiUF5Y-Q3jkAAAAC/this-man-above-me-fish-react-him-fish.gif"
-        return None
+        return ""
     
     def timer(self, method, time):
         if method in self.timeouts:

@@ -2,7 +2,7 @@
 from collections import defaultdict
 import os
 
-from discord import *
+from discord import Intents, Message, RawReactionActionEvent, User, TextChannel, abc, Forbidden
 from dotenv import load_dotenv
 from discord.ext.commands import Bot, Context
 

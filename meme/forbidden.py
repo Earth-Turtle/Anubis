@@ -23,6 +23,6 @@ class Inquisitor:
         try:
             await message.reply(self.YOURE_OUT)
             await message.author.timeout(timedelta(seconds=60))
-        except:
+        except Exception:
             await message.channel.send("Mods, send this man to the principal's office")
             await message.channel.send("Can't time them out myself")
