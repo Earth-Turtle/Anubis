@@ -7,6 +7,7 @@ taglines = [
     "We've got high expectations of you now, don't mess this up.",
     "Toddbot, gift them Skyrim for the Samsung RF27T5501S Smart Fridge.",
     "However, remind yourself that overconfidence is a slow and insidious killer.",
+    "You da real skibidi toilet for that"
 ]
 
 # Lines for when someone tries to pin their own meme. 

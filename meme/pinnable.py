@@ -11,11 +11,9 @@ async def check_pinnable(reaction: Reaction, user: Member):
         if await alerta(reaction, user):
             return
         if reaction.count >= PIN_THRESHOLD and user != message.author and not message.pinned:
-            print("Users pinning post: ", [user.name async for user in reaction.users()])
+            concur = [user async for user in reaction.users()]
+            print("Users pinning post: ", [user.name for user in concur])
             await message.pin(reason="haha funi meme")
-            concur = []
-            async for user in reaction.users():
-                concur.append(user)
             await message.reply("Congrats! {} determined your meme should be pinned. {}".format(format_users(concur), get_tagline()))
     
 async def alerta(reaction: Reaction, user: Member):

@@ -2,9 +2,10 @@ from discord import Message
 from datetime import timedelta
 import re
 
+YOURE_OUT = "https://media.tenor.com/BKXop7HRIdUAAAAC/out-baseball.gif"
+
 class Inquisitor:
     counter = 0
-    YOURE_OUT = "https://media.tenor.com/BKXop7HRIdUAAAAC/out-baseball.gif"
 
     async def inquisition(self, message: Message):
         
@@ -21,7 +22,7 @@ class Inquisitor:
 
     async def timeout(self, message: Message):
         try:
-            await message.reply(self.YOURE_OUT)
+            await message.reply(YOURE_OUT)
             await message.author.timeout(timedelta(seconds=60))
         except Exception:
             await message.channel.send("Mods, send this man to the principal's office")
