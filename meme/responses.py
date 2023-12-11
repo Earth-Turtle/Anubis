@@ -1,6 +1,8 @@
 from discord import Message
+from discord.ext.commands import Context
 import re
 from datetime import datetime
+from meme.lines import answer, stuff
 
 
 class Responses:
@@ -16,6 +18,11 @@ class Responses:
             return "https://i.imgur.com/hAmu4dV.png"
         if re.search(r"\bfish\b", message.content) and self.timer("fish", 60*60*24):
             return "https://media.tenor.com/BiUF5Y-Q3jkAAAAC/this-man-above-me-fish-react-him-fish.gif"
+        for keyword in stuff:
+            if keyword in message.content.lower() and len(set(message.content)) >= 4:
+                print("Keyword [{}] found in message [{}] at {}".format(keyword, message.content, message.created_at))
+                if self.timer("keyword: {}".format(keyword), 60 * 60 * 4):
+                    return stuff[keyword]
         return ""
     
     def timer(self, method, time):
@@ -27,3 +34,10 @@ class Responses:
             return False
         self.timeouts[method] = datetime.now()
         return True
+    
+    async def check_answer(self, ctx: Context, guess: str):
+        if self.timer("guess", 60 * 60 * 24 * 3):
+            if guess.lower() != answer.lower():
+                await ctx.send("No <:wyverngun:724704906954670241>\nI sleep")
+            else:
+                await ctx.send("{}, {} has done it! <@151448821254193152>, give them their prize!".format(ctx.message.guild.default_role ,ctx.author.mention))

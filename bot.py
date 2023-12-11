@@ -19,6 +19,7 @@ intents.moderation = True
 intents.members = True
 
 inquisitor = Inquisitor()
+responder = Responses()
 
 bot = Bot(command_prefix='!', intents=intents)
 
@@ -28,11 +29,11 @@ async def on_ready():
 
 @bot.event
 async def on_message(message: Message):
-    responder = Responses()
     response = responder.find_response(message)
     if response:
         await message.reply(response)
     await inquisitor.inquisition(message)
+    await bot.process_commands(message)
     
 
 @bot.event
@@ -47,6 +48,9 @@ async def on_raw_reaction_add(payload: RawReactionActionEvent):
             break
     await check_pinnable(reaction, user)
     
+@bot.command(name="ping")
+async def ping(ctx: Context):
+    await ctx.message.reply("pong")
 
 @bot.command(name='reactions_given', help='Generates stats for a specific user on their reactions given')
 async def reactions_given(ctx: Context, user: User, amount: int = 200, channel: TextChannel = None):
@@ -81,6 +85,10 @@ async def reactions_received(ctx: Context, user: User, amount: int = 200, channe
                 stats[str(reaction.emoji)] += reaction.count
     await ctx.send(f"Reactions {user.mention} has received, from {count} posts:")
     await ctx.send(format_stats(stats))
+
+@bot.command(name="guess", help="Make an attempt to guess the secret word")
+async def check_guess(ctx: Context, guess: str):
+    await responder.check_answer(ctx, guess)
 
 @bot.event
 async def on_command_error(ctx, error):
