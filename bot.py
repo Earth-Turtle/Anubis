@@ -32,7 +32,7 @@ async def on_message(message: Message):
     response = responder.find_response(message)
     if response:
         await message.reply(response)
-    await inquisitor.inquisition(message)
+    # await inquisitor.inquisition(message)
     await bot.process_commands(message)
     
 
