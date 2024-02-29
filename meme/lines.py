@@ -15,12 +15,30 @@ stuff = {
     "dream": "https://i.imgur.com/la2s8Xx.jpeg",
     "ghost": "https://i.imgur.com/xr9kDQE.jpeg",
     "wind": "https://i.imgur.com/t4UWPCZ.jpeg",
+    "windy": "https://i.imgur.com/t4UWPCZ.jpeg",
     "mirror": "https://i.imgur.com/u1C6W3r.jpeg",
-    "Kevin": "https://i.imgur.com/m52MVuK.jpeg",
+    "mirrored": "https://i.imgur.com/u1C6W3r.jpeg",
+    "feather": "https://i.imgur.com/m52MVuK.jpeg",
     "pink": "https://i.imgur.com/j7xc8Sn.jpeg",
     "core": "https://i.imgur.com/W7mbDkq.jpeg",
-    "wrong": "https://media.discordapp.net/attachments/1094347836382007446/1183007779997368362/20230514_131551.jpg",
+    "perfect": "https://avatars.cloudflare.steamstatic.com/257da88900d59c704efae09a6731252af2034719_full.jpg"
 }
+
+celeste_hits = [
+    "celeste",
+    "mountain",
+    "madeline",
+    "badeline",
+    "heart",
+    "crow",
+    "theo",
+    "dash",
+    "trans",
+    "strawberry",
+    "granny",
+    "cassette",
+    "reina",
+]
 
 answer = "Farewell"
 

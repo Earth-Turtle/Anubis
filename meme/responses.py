@@ -2,7 +2,7 @@ from discord import Message
 from discord.ext.commands import Context
 import re
 from datetime import datetime
-from meme.lines import answer, stuff
+from meme.lines import answer, stuff, celeste_hits
 
 
 class Responses:
@@ -19,7 +19,8 @@ class Responses:
         if re.search(r"\bfish\b", message.content) and self.timer("fish", 60*60*24):
             return "https://media.tenor.com/BiUF5Y-Q3jkAAAAC/this-man-above-me-fish-react-him-fish.gif"
         for keyword in stuff:
-            if keyword in message.content.lower() and len(set(message.content)) >= 4:
+            pattern = r"\b" + keyword + r"\b"
+            if re.search(pattern, message.content.lower()) and len(set(message.content.split())) >= 4 and not message.content.lower().startswith("|"):
                 print("Keyword [{}] found in message [{}] at {}".format(keyword, message.content, message.created_at))
                 if self.timer("keyword: {}".format(keyword), 60 * 60 * 4):
                     return stuff[keyword]
@@ -36,8 +37,12 @@ class Responses:
         return True
     
     async def check_answer(self, ctx: Context, guess: str):
-        if self.timer("guess", 60 * 60 * 24 * 3):
-            if guess.lower() != answer.lower():
+        if self.timer("guess", 60 * 60 * 20):
+            if guess.lower() in stuff:
+                await ctx.send("No <:wyverngun:724704906954670241>\nGood try tho")
+            elif guess.lower() in celeste_hits:
+                await ctx.send("No <:annoyedeline:1195839611268767785>\nI sleep")
+            elif guess.lower() != answer.lower():
                 await ctx.send("No <:wyverngun:724704906954670241>\nI sleep")
             else:
                 await ctx.send("{}, {} has done it! <@151448821254193152>, give them their prize!".format(ctx.message.guild.default_role ,ctx.author.mention))
