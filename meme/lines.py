@@ -11,16 +11,16 @@ taglines = [
 ]
 
 stuff = {
-    "city": "https://i.imgur.com/vOzYUWQ.jpeg",
+    # "city": "https://i.imgur.com/vOzYUWQ.jpeg",
 
-    "dream": "https://i.imgur.com/la2s8Xx.jpeg",
+    # "dream": "https://i.imgur.com/la2s8Xx.jpeg",
 
     "ghost": "https://i.imgur.com/xr9kDQE.jpeg",
     "hotel": "https://i.imgur.com/xr9kDQE.jpeg",
     "clean": "https://i.imgur.com/xr9kDQE.jpeg",
 
-    "wind": "https://i.imgur.com/t4UWPCZ.jpeg",
-    "windy": "https://i.imgur.com/t4UWPCZ.jpeg",
+    # "wind": "https://i.imgur.com/t4UWPCZ.jpeg",
+    # "windy": "https://i.imgur.com/t4UWPCZ.jpeg",
 
     "mirror": "https://i.imgur.com/u1C6W3r.jpeg",
     "mirrored": "https://i.imgur.com/u1C6W3r.jpeg",
@@ -29,10 +29,10 @@ stuff = {
     "kevin": "https://i.imgur.com/m52MVuK.jpeg",
     "bumper": "https://i.imgur.com/m52MVuK.jpeg",
 
-    "pink": "https://i.imgur.com/j7xc8Sn.jpeg",
+    # "pink": "https://i.imgur.com/j7xc8Sn.jpeg",
     "peak": "https://i.imgur.com/j7xc8Sn.jpeg",
 
-    "core": "https://i.imgur.com/W7mbDkq.jpeg",
+    # "core": "https://i.imgur.com/W7mbDkq.jpeg",
 
     "perfect": "https://avatars.cloudflare.steamstatic.com/257da88900d59c704efae09a6731252af2034719_full.jpg"
 }

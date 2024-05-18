@@ -1,5 +1,6 @@
+import asyncio
 from discord import Message
-from discord.ext.commands import Context
+from discord.ext.commands import Context, Bot
 import re
 from datetime import datetime
 from meme.lines import answer, stuff, celeste_hits
@@ -9,7 +10,7 @@ class Responses:
 
     timeouts = {}
 
-    def find_response(self, message: Message) -> str:
+    def find_response(self, bot: Bot, message: Message) -> str:
         if re.search("she [A-Za-z0-9 ]+ on my [A-Za-z0-9 ]+ (until|till?'?) (i|im|i'm|my) [A-Za-z0-9 ]+", message.content.lower()):
             return "`EXTREMELY LOUD INCORRECT BUZZER`"
         if message.author.name.lower() == "biological_jessie" and re.search(":3", message.content) and self.timer(":3", 60*60):
@@ -22,8 +23,13 @@ class Responses:
             pattern = r"\b" + keyword + r"\b"
             if re.search(pattern, message.content.lower()) and len(set(message.content.split())) >= 4 and not message.content.lower().startswith("|"):
                 print("Keyword [{}] found in message [{}] at {}".format(keyword, message.content, message.created_at))
+                # If it's in anything other than the Donta server, respond in same channel
+                response_channel = message.channel
+                if message.guild.id == 525147313023221775:
+                    # Otherwise respond in fanatic-spiritualists
+                    response_channel = bot.get_channel(1094354016286281818)
                 if self.timer("keyword: {}".format(keyword), 60 * 60 * 4):
-                    return stuff[keyword]
+                    asyncio.run_coroutine_threadsafe(response_channel.send(stuff[keyword] + f"\n{message.author.display_name} said: `{message.content}`"), bot.loop)
         return ""
     
     def timer(self, method, time):
