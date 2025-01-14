@@ -7,13 +7,17 @@ taglines = [
     "We've got high expectations of you now, don't mess this up.",
     "Toddbot, gift them Skyrim for the Samsung RF27T5501S Smart Fridge.",
     "However, remind yourself that overconfidence is a slow and insidious killer.",
-    "You da real skibidi toilet for that",
+    "You da real skibidi toilet for that.",
+    "Chat thinks it's funny too."
 ]
 
 stuff = {
     # "city": "https://i.imgur.com/vOzYUWQ.jpeg",
+    "granny": "https://i.imgur.com/vOzYUWQ.jpeg",
 
     # "dream": "https://i.imgur.com/la2s8Xx.jpeg",
+    "reflection": "https://i.imgur.com/la2s8Xx.jpeg",
+    "twin": "https://i.imgur.com/la2s8Xx.jpeg",
 
     "ghost": "https://i.imgur.com/xr9kDQE.jpeg",
     "hotel": "https://i.imgur.com/xr9kDQE.jpeg",
@@ -21,6 +25,7 @@ stuff = {
 
     # "wind": "https://i.imgur.com/t4UWPCZ.jpeg",
     # "windy": "https://i.imgur.com/t4UWPCZ.jpeg",
+    "cloud": "https://i.imgur.com/t4UWPCZ.jpeg",
 
     "mirror": "https://i.imgur.com/u1C6W3r.jpeg",
     "mirrored": "https://i.imgur.com/u1C6W3r.jpeg",
@@ -31,8 +36,12 @@ stuff = {
 
     # "pink": "https://i.imgur.com/j7xc8Sn.jpeg",
     "peak": "https://i.imgur.com/j7xc8Sn.jpeg",
+    "flag": "https://i.imgur.com/j7xc8Sn.jpeg",
 
     # "core": "https://i.imgur.com/W7mbDkq.jpeg",
+    "hot": "https://i.imgur.com/W7mbDkq.jpeg",
+    "cold": "https://i.imgur.com/W7mbDkq.jpeg",
+    "switch": "https://i.imgur.com/W7mbDkq.jpeg",
 
     "perfect": "https://avatars.cloudflare.steamstatic.com/257da88900d59c704efae09a6731252af2034719_full.jpg"
 }

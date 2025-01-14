@@ -6,9 +6,8 @@ from discord import Intents, Message, RawReactionActionEvent, User, TextChannel,
 from dotenv import load_dotenv
 from discord.ext.commands import Bot, Context
 
-from meme.responses import Responses
+from meme.responses import find_response, check_answer, independent_response
 from meme.pinnable import check_pinnable
-from meme.forbidden import Inquisitor
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -18,9 +17,6 @@ intents.message_content = True
 intents.moderation = True
 intents.members = True
 
-inquisitor = Inquisitor()
-responder = Responses()
-
 bot = Bot(command_prefix='!', intents=intents)
 
 @bot.event
@@ -29,11 +25,8 @@ async def on_ready():
 
 @bot.event
 async def on_message(message: Message):
-    if message.author == bot.user: return
-    response = responder.find_response(bot, message)
-    if response:
-        await message.reply(response)
-    # await inquisitor.inquisition(message)
+    if message.author.bot: return
+    await find_response(bot, message)
     await bot.process_commands(message)
     
 
@@ -89,7 +82,7 @@ async def reactions_received(ctx: Context, user: User, amount: int = 200, channe
 
 @bot.command(name="guess", help="Make an attempt to guess the secret word")
 async def check_guess(ctx: Context, guess: str):
-    await responder.check_answer(ctx, guess)
+    await check_answer(ctx, guess)
 
 @bot.event
 async def on_command_error(ctx, error):
