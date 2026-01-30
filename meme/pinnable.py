@@ -1,13 +1,14 @@
-from discord import Reaction, Member
+from discord import Reaction, Member, User
 
 from meme.lines import get_alerta, get_tagline
+import logging
 
 PIN_THRESHOLD = 3
 
 async def check_pinnable(reaction: Reaction, user: Member):
     message = reaction.message
     if reaction.emoji == "📌":
-        print("📌 reaction on post at time " + str(reaction.message.created_at) + " in channel " + reaction.message.channel.name)
+        logging.info("📌 reaction on post at time " + str(reaction.message.created_at) + " in channel " + str(reaction.message.channel.__repr__()))
         if await alerta(reaction, user):
             return
         if reaction.count >= PIN_THRESHOLD and user != message.author and not message.pinned:
@@ -24,7 +25,7 @@ async def alerta(reaction: Reaction, user: Member):
         return True
     return False
 
-def format_users(users: list[Member]) -> str:
+def format_users(users: list[Member | User]) -> str:
     if len(users) == 1: 
         return "{} has".format(users[0].mention)
     elif len(users) == 2: 
