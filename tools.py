@@ -1,26 +1,24 @@
-from datetime import timedelta, time, datetime
+from datetime import timedelta, datetime
 from functools import wraps
-from typing import Callable
+from typing import Callable, Union
 
-last_invoke: dict[str, time] = {}
+last_invoke: dict[str, datetime] = {}
 
-def cooldown[**P, R](name:str | None = None, cooldown: timedelta = timedelta(minutes=1)) -> Callable[P, R]:
-    def wrap(f: Callable[P, R]) -> Callable[P, R]:
+def cooldown[**P, R](name:str | None = None, cooldown: timedelta = timedelta(minutes=1)) -> Callable[[Callable[P, R]], Callable[P, Union[None, R]]]:
+    def wrap(f: Callable[P, R]) -> Callable[P, Union[None, R]]:
         nonlocal name
-        if name is None: 
-            name = f.__name__
+        cooldown_name = name if name else f.__name__
         @wraps(f)
         def inner(*args: P.args, **kwargs: P.kwargs):
-            cur_time = datetime.now
-            if last_invoke[name] is None or last_invoke[name] + cooldown < cur_time:
-                last_invoke[name] = cur_time
+            if timer(cooldown_name, cooldown):
                 return f(*args, **kwargs)
         return inner
     return wrap
 
 def timer(name: str, cooldown: timedelta = timedelta(minutes=1)) -> bool:
-    cur_time = datetime.now
-    if last_invoke[name] is None or last_invoke[name] + cooldown < cur_time:
+    cur_time = datetime.now()
+    last_time_invoked = last_invoke.get(name)
+    if last_time_invoked is None or last_time_invoked + cooldown < cur_time:
         last_invoke[name] = cur_time
         return True
     return False

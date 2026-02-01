@@ -43,7 +43,7 @@ async def strawberry_search(bot: Bot, message: Message):
                 asyncio.run_coroutine_threadsafe(response_channel.send(stuff[keyword] + f"\n{message.author.display_name} said: `{message.content}`"), bot.loop)
 
 @cooldown("check_answer", timedelta(hours=20))
-async def check_answer(self, ctx: Context, guess: str):
+async def check_answer(ctx: Context[Bot], guess: str):
     if guess.lower() in stuff:
         await ctx.send("No <:wyverngun:724704906954670241>\nGood try tho")
     elif guess.lower() in celeste_hits:
