@@ -4,8 +4,9 @@ import os
 import logging
 
 from discord import Intents, Message, RawReactionActionEvent, User, TextChannel, abc, Forbidden
+from discord.abc import MessageableChannel
 from dotenv import load_dotenv
-from discord.ext.commands import Bot, Context, CommandError
+from discord.ext.commands import Bot, Context, CommandError # pyright: ignore[reportMissingTypeStubs]
 
 from meme.responses import find_response
 from meme.pinnable import check_pinnable
@@ -61,11 +62,17 @@ async def ping(ctx: Context[Bot]):
     await ctx.message.reply("pong")
 
 @bot.command(name='reactions_given', help='Generates stats for a specific user on their reactions given')
-async def reactions_given(ctx: Context[Bot], user: User, amount: int = 200, channel: TextChannel = None):
+async def reactions_given(ctx: Context[Bot], user: User, amount: int = 200, channel: TextChannel | None = None):
     stats: dict[str, int] = defaultdict(int)
-    channel = channel if channel else ctx.channel
-    async with channel.typing():
-        messages = await get_history(channel, amount)
+    if channel:
+        search_channel = channel
+    elif isinstance(ctx.channel, TextChannel):
+        search_channel = ctx.channel
+    else:
+        return
+    
+    async with search_channel.typing():
+        messages = await get_history(search_channel, amount)
         if not messages:
             logging.warning("Message iterator was not retrieved")
             return
@@ -83,7 +90,7 @@ async def reactions_given(ctx: Context[Bot], user: User, amount: int = 200, chan
     
 
 @bot.command(name='reactions_received', help='Genetates stats for a specific user on their reactions received. Mention the user as first argument, number of messages to check as the second')
-async def reactions_received(ctx: Context[Bot], user: User, amount: int = 200, channel: TextChannel = None):
+async def reactions_received(ctx: Context[Bot], user: User, amount: int = 200, channel: MessageableChannel | None = None):
     stats: dict[str, int] = defaultdict(int)
     channel = channel if channel else ctx.channel
     await channel.typing()

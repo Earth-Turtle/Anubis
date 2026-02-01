@@ -1,6 +1,6 @@
 from datetime import timedelta
 from discord import Message
-from discord.ext.commands import Bot
+from discord.ext.commands import Bot # pyright: ignore[reportMissingTypeStubs]
 import re
 from tools import timer
 
