@@ -7,7 +7,7 @@ from discord import Intents, Message, RawReactionActionEvent, User, TextChannel,
 from dotenv import load_dotenv
 from discord.ext.commands import Bot, Context, CommandError
 
-from meme.responses import find_response, check_answer, independent_response
+from meme.responses import find_response
 from meme.pinnable import check_pinnable
 
 load_dotenv()
@@ -101,10 +101,6 @@ async def reactions_received(ctx: Context[Bot], user: User, amount: int = 200, c
     await ctx.send(f"Reactions {user.mention} has received, from {count} posts:")
     await ctx.send(format_stats(stats))
 
-@bot.command(name="guess", help="Make an attempt to guess the secret word")
-async def check_guess(ctx: Context[Bot], guess: str):
-    await check_answer(ctx, guess)
-
 @bot.event
 async def on_command_error(ctx: Context[Bot], error: CommandError):
     await ctx.send('Something went wrong, check stdout for details')
@@ -118,7 +114,7 @@ async def get_history(channel: abc.Messageable, amount: int):
         await channel.send("Bot does not have history permissions")
         return None
 
-def format_stats(stats: dict):
+def format_stats(stats: dict[str, int]):
     if not stats:
         return "No information found for user"
     return '\n'.join([f'{k}: {v}' for k, v in sorted(stats.items(), key=lambda item: item[1], reverse=True)])
