@@ -3,7 +3,7 @@ from collections import defaultdict
 import os
 import logging
 
-from discord import Intents, Message, RawReactionActionEvent, User, TextChannel, abc, Forbidden
+from discord import Intents, Interaction, Message, RawReactionActionEvent, User, TextChannel, abc, Forbidden, app_commands
 from discord.abc import MessageableChannel
 from dotenv import load_dotenv
 from discord.ext.commands import Bot, Context, CommandError # pyright: ignore[reportMissingTypeStubs]
@@ -21,6 +21,7 @@ intents.moderation = True
 intents.members = True
 
 bot = Bot(command_prefix='!', intents=intents)
+command_tree = app_commands.CommandTree(bot)
 log_handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
 
 @bot.event
@@ -57,56 +58,66 @@ async def on_raw_reaction_add(payload: RawReactionActionEvent):
         return
     await check_pinnable(reaction, user)
     
-@bot.command(name="ping")
-async def ping(ctx: Context[Bot]):
-    await ctx.message.reply("pong")
-
-@bot.command(name='reactions_given', help='Generates stats for a specific user on their reactions given')
-async def reactions_given(ctx: Context[Bot], user: User, amount: int = 200, channel: TextChannel | None = None):
-    stats: dict[str, int] = defaultdict(int)
-    if channel:
-        search_channel = channel
-    elif isinstance(ctx.channel, TextChannel):
-        search_channel = ctx.channel
-    else:
+@command_tree.command(name="ping")
+async def ping(interaction: Interaction):
+    if not isinstance(interaction.channel, TextChannel):
+        logging.warning("Interaction attempted in non-Text channel", interaction)
         return
-    
-    async with search_channel.typing():
-        messages = await get_history(search_channel, amount)
-        if not messages:
-            logging.warning("Message iterator was not retrieved")
-            return
-        
-        async for message in messages:
-            reactions = message.reactions
-            for reaction in reactions:
+    await interaction.channel.send("pong")
+
+@command_tree.command(name="Reactions given", description="Information on the reactions your or a specific user have given")
+async def reactions_given_command(interaction: Interaction, user: User | None, amount: int = 200, channel: MessageableChannel | None = None):
+    """
+    :param interaction: Context for the command invocation
+    :param user: The user to analyze. If not provided, will use the user invoking the command
+    :param amount: How many messages to analyze
+    :param channel: The channel to search for messages. If not provided, will use the channel the command is used in
+    """
+    if not isinstance(interaction.channel, MessageableChannel):
+        logging.warning("Can't interact with channel provided in interaction", interaction)
+        return
+    if channel:
+        channel_to_analyze = channel
+    else:
+        channel_to_analyze = interaction.channel
+    stats: dict[str, int] = defaultdict(int)
+    user_to_analyze = user if user else interaction.user
+
+    async with interaction.channel.typing():
+        async for message in channel_to_analyze.history(limit=amount):
+            for reaction in message.reactions:
                 async for reactor in reaction.users():
-                    if reactor.name == user.name:
+                    if reactor.name == user_to_analyze.name:
                         stats[str(reaction.emoji)] += 1
                         break
-    await ctx.send("Reactions given by " + user.mention)
-    await ctx.send(format_stats(stats))
-            
-    
+    # TODO: clean up these messages, check format_stats for example-ish
+    await interaction.channel.send("Reactions given by:")
+    await interaction.channel.send(str(stats))
 
-@bot.command(name='reactions_received', help='Genetates stats for a specific user on their reactions received. Mention the user as first argument, number of messages to check as the second')
-async def reactions_received(ctx: Context[Bot], user: User, amount: int = 200, channel: MessageableChannel | None = None):
-    stats: dict[str, int] = defaultdict(int)
-    channel = channel if channel else ctx.channel
-    await channel.typing()
-    messages = await get_history(channel, amount)
-    if not messages:
-        logging.warning("didn't get message iterator")
+@command_tree.command(name="Reactions received", description="Information on the reactions you have received")
+async def reactions_received_command(interaction: Interaction, user: User | None = None, amount: int = 200, channel: MessageableChannel | None = None):
+    """
+    :param interaction: Context for the command invocation
+    :param user: The user to analyze. If not provided, will use the user invoking the command
+    :param amount: How many messages to analyze
+    :param channel: The channel to search for messages. If not provided, will use the channel the command is used in
+    """
+    if not isinstance(interaction.channel, MessageableChannel):
+        logging.warning("Can't analyze messages in this channel", interaction)
         return
-    count = 0
-    async for message in messages:
-        if message.author.name == user.name:
-            count += 1
-            reactions = message.reactions
-            for reaction in reactions:
-                stats[str(reaction.emoji)] += reaction.count
-    await ctx.send(f"Reactions {user.mention} has received, from {count} posts:")
-    await ctx.send(format_stats(stats))
+    stats: dict[str, int] = defaultdict(int)
+    user_to_analyze = user if user else interaction.user
+    channel_to_analyze = channel if channel else interaction.channel
+    posts_from_user = 0
+    async with interaction.channel.typing():
+        async for message in channel_to_analyze.history(limit=amount):
+            if message.author.name == user_to_analyze.name:
+                posts_from_user += 1
+                for reaction in message.reactions:
+                    stats[str(reaction.emoji)] += reaction.count
+    # TODO: make pretty
+    await interaction.channel.send(f"Reactions {user_to_analyze.mention} has received")
+    await interaction.channel.send(str(stats))
 
 @bot.event
 async def on_command_error(ctx: Context[Bot], error: CommandError):
