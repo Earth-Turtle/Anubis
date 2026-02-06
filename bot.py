@@ -2,8 +2,9 @@
 from collections import defaultdict
 import os
 import logging
+import logging.handlers
 
-from discord import Intents, Interaction, Message, RawReactionActionEvent, User, TextChannel, abc, Forbidden, app_commands
+from discord import Intents, Interaction, Message, RawReactionActionEvent, User, TextChannel, app_commands
 from discord.abc import MessageableChannel
 from dotenv import load_dotenv
 from discord.ext.commands import Bot, Context, CommandError # pyright: ignore[reportMissingTypeStubs]
@@ -22,7 +23,8 @@ intents.members = True
 
 bot = Bot(command_prefix='!', intents=intents)
 command_tree = app_commands.CommandTree(bot)
-log_handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
+log_handler = logging.handlers.RotatingFileHandler("logs/discord.log", maxBytes=1_000_000, backupCount=3)
+log_handler.setFormatter(logging.Formatter(datefmt=r"%y-%m-%d %H:%M:%S"))
 
 @bot.event
 async def on_ready():
@@ -31,16 +33,15 @@ async def on_ready():
 @bot.event
 async def on_message(message: Message):
     if message.author.bot: return
-    await find_response(bot, message)
     await bot.process_commands(message)
+    await find_response(bot, message)
     
 
 @bot.event
 async def on_raw_reaction_add(payload: RawReactionActionEvent):
-    payload.member
     user = payload.member
     if user is None:
-        logging.error("Reacting user doesn't exist")
+        logging.error("Reacting user doesn't exist for message id {}", payload.message_id)
         return
     channel = bot.get_channel(payload.channel_id)
     if not isinstance(channel, TextChannel):
@@ -121,16 +122,7 @@ async def reactions_received_command(interaction: Interaction, user: User | None
 
 @bot.event
 async def on_command_error(ctx: Context[Bot], error: CommandError):
-    await ctx.send('Something went wrong, check stdout for details')
-    raise error
-
-async def get_history(channel: abc.Messageable, amount: int):
-    try:
-        return channel.history(limit=amount)
-    except Forbidden:
-        print("Bot does not have history permissions")
-        await channel.send("Bot does not have history permissions")
-        return None
+    logging.error(f"error: [{error}], ctx: [{ctx}]")
 
 def format_stats(stats: dict[str, int]):
     if not stats:

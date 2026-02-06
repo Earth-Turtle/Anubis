@@ -18,6 +18,12 @@ async def check_pinnable(reaction: Reaction, user: Member):
             await message.reply("Congrats! {} determined your meme should be pinned. {}".format(format_users(concur), get_tagline()))
     
 async def alerta(reaction: Reaction, user: Member):
+    """
+    Checks if a user tried to pin their own meme. Removes the reaction and returns true if so
+    
+    :param reaction: The reaction performed
+    :param user: the user doing the reaction
+    """
     if reaction.message.author == user:
         logging.warning(user.name + " tried to pin their own message")
         await reaction.message.reply(get_alerta().format(user.mention))
