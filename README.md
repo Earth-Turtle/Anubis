@@ -4,6 +4,20 @@ This is a simple discord bot, meant to generate statistics for reactions on post
 
 Well-suited for a server I frequent that often has users reacting with various emoji based on their opinion of a post.
 
+## Development
+
+### Building
+
+```bash
+docker build . -t anubis:0.0.1 --target dev
+```
+
+### Running
+
+```bash
+docker run -it --entrypoint bash -d --name anubis --rm anubis:0.0.1
+```
+
 ## Commands
 
 All commands are prefixed with `!`
