@@ -1,5 +1,5 @@
 ARG PYTHON_VERSION=3.12
-FROM python:${PYTHON_VERSION}-slim
+FROM python:${PYTHON_VERSION}-slim AS dev
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -11,5 +11,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     python -m pip install -r requirements.txt
 
 COPY . .
+
+FROM dev AS final
 
 CMD [ "python3", "bot.py" ]
