@@ -13,11 +13,22 @@ For developing
 docker build . -t anubis:0.0.1 --target dev
 ```
 
+For running
+```bash
+docker build . -t anubis:<version> --target final
+```
+
 ### Running
 
+dev-ing
 ```bash
 docker run -it --entrypoint bash -d --name anubis --rm anubis:0.0.1
 python3 bot.py
+```
+
+running
+```bash
+docker run -d --name anubis_prod --rm -e DISCORD_TOKEN="secret :3" anubis:<version>
 ```
 
 ## Commands
