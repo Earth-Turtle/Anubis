@@ -4,8 +4,7 @@ import os
 import logging
 import logging.handlers
 
-from discord import Intents, Interaction, Message, RawReactionActionEvent, User, TextChannel, app_commands
-from discord.abc import MessageableChannel
+from discord import Intents, Interaction, Message, RawReactionActionEvent, User, TextChannel
 from dotenv import load_dotenv
 from discord.ext.commands import Bot, Context, CommandError # pyright: ignore[reportMissingTypeStubs]
 
@@ -22,8 +21,7 @@ intents.moderation = True
 intents.members = True
 
 bot = Bot(command_prefix='!', intents=intents)
-command_tree = app_commands.CommandTree(bot)
-log_handler = logging.handlers.RotatingFileHandler("logs/discord.log", maxBytes=1_000_000, backupCount=3)
+log_handler = logging.handlers.RotatingFileHandler("discord.log", maxBytes=1_000_000, backupCount=3, mode="a+")
 log_handler.setFormatter(logging.Formatter(datefmt=r"%y-%m-%d %H:%M:%S"))
 
 @bot.event
@@ -59,22 +57,22 @@ async def on_raw_reaction_add(payload: RawReactionActionEvent):
         return
     await check_pinnable(reaction, user)
     
-@command_tree.command(name="ping")
+@bot.tree.command(name="ping")
 async def ping(interaction: Interaction):
     if not isinstance(interaction.channel, TextChannel):
         logging.warning("Interaction attempted in non-Text channel", interaction)
         return
     await interaction.channel.send("pong")
 
-@command_tree.command(name="Reactions given", description="Information on the reactions your or a specific user have given")
-async def reactions_given_command(interaction: Interaction, user: User | None, amount: int = 200, channel: MessageableChannel | None = None):
+@bot.tree.command(name="reactions_given", description="Information on the reactions your or a specific user have given")
+async def reactions_given_command(interaction: Interaction, user: User | None, amount: int = 200, channel: TextChannel | None = None):
     """
     :param interaction: Context for the command invocation
     :param user: The user to analyze. If not provided, will use the user invoking the command
     :param amount: How many messages to analyze
     :param channel: The channel to search for messages. If not provided, will use the channel the command is used in
     """
-    if not isinstance(interaction.channel, MessageableChannel):
+    if not isinstance(interaction.channel, TextChannel):
         logging.warning("Can't interact with channel provided in interaction", interaction)
         return
     if channel:
@@ -95,15 +93,15 @@ async def reactions_given_command(interaction: Interaction, user: User | None, a
     await interaction.channel.send("Reactions given by:")
     await interaction.channel.send(str(stats))
 
-@command_tree.command(name="Reactions received", description="Information on the reactions you have received")
-async def reactions_received_command(interaction: Interaction, user: User | None = None, amount: int = 200, channel: MessageableChannel | None = None):
+@bot.tree.command(name="reactions_received", description="Information on the reactions you have received")
+async def reactions_received_command(interaction: Interaction, user: User | None = None, amount: int = 200, channel: TextChannel | None = None):
     """
     :param interaction: Context for the command invocation
     :param user: The user to analyze. If not provided, will use the user invoking the command
     :param amount: How many messages to analyze
     :param channel: The channel to search for messages. If not provided, will use the channel the command is used in
     """
-    if not isinstance(interaction.channel, MessageableChannel):
+    if not isinstance(interaction.channel, TextChannel):
         logging.warning("Can't analyze messages in this channel", interaction)
         return
     stats: dict[str, int] = defaultdict(int)

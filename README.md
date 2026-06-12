@@ -8,6 +8,7 @@ Well-suited for a server I frequent that often has users reacting with various e
 
 ### Building
 
+For developing
 ```bash
 docker build . -t anubis:0.0.1 --target dev
 ```
@@ -16,6 +17,7 @@ docker build . -t anubis:0.0.1 --target dev
 
 ```bash
 docker run -it --entrypoint bash -d --name anubis --rm anubis:0.0.1
+python3 bot.py
 ```
 
 ## Commands
